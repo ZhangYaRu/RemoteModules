@@ -1,2 +1,3 @@
 rootProject.name = "RemoteModules"
 include ':app', ':networkroute'
+include ':network'
