@@ -98,6 +98,24 @@ public class AngecyManager {
     }
 
     /**
+     * 增加一条HTTP代理连接
+     *
+     * @param angecyParams 配置参数
+     * @return 连接正常, 返回0   连接异常 返回-1
+     */
+    public int addNewHTTPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
+        // 校验数据有效性
+        if (angecyParams == null || angecyParams.activityNetwork == null
+                || TextUtils.isEmpty(angecyParams.ip) || angecyParams.port == 0)
+            return -1;
+        HttpAngecy httpAngecy = new HttpAngecy(angecyParams);
+        httpAngecy.setAngecyActionListener(angecyActionListener);
+        httpAngecy.start();
+        connectionPoolMap.put(angecyParams.ip + ":" + angecyParams.port, httpAngecy);
+        return 0;
+    }
+
+    /**
      * 增加一条UDP代理连接
      *
      * @param angecyParams 配置参数
@@ -116,7 +134,7 @@ public class AngecyManager {
                 return baseAngecy.angecyPortFlag;
             }
         }
-        Log.d("代理转发测试", "angecyMangaer    addNewUDPAngecy:   ===" +mapKey);
+//        Log.d("代理转发测试", "angecyMangaer    addNewUDPAngecy:   ===" +mapKey);
 
         UDPAngecy udpAngecy = new UDPAngecy(angecyParams);
         udpAngecy.setAngecyActionListener(angecyActionListener);
