@@ -203,5 +203,9 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
                 mAngecyActionListener.onError("Error closing server socket: " + e.getMessage());
         }
     }
+
+    private void test(){
+        int a = 0;
+    }
 }
 
