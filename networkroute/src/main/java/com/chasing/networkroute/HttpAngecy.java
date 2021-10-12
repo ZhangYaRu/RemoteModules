@@ -60,6 +60,8 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
                         os.write(buffer, 0, bytesRead);
                         os.flush();
                         Log.d("代理转发测试3", "forward    bytesRead:" + new String(buffer, 0, bytesRead));
+                    } else {
+                        break;
                     }
                 }
             } catch (IOException e) {
@@ -69,7 +71,7 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
                     mAngecyActionListener.onError("read/write failed: " + e.getMessage());
             }
         }
-    };
+    }
 
     /**
      * 代理是否可以执行
@@ -84,7 +86,7 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
     public HttpAngecy(AngecyParams angecyParams) {
         mAngecyParams = angecyParams;
         mThreadPool = new ThreadPoolExecutor(20, 20,
-                0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20));
+                0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(20));
     }
 
     /**
@@ -154,7 +156,7 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
                 mAngecyActionListener.onError("Forward start error: " + e.getMessage());
             return;
         }
-        Log.d("代理转发测试", "startForward:   ");
+        Log.d("代理转发测试", "startForward:     ");
 
         forwardNo1 = new ForwardRunnable();
         forwardNo1.setIs(clientIn);
