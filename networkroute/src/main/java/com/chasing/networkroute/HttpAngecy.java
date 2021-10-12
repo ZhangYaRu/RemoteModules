@@ -204,7 +204,7 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
         }
     }
 
-    private void test(){
+    public void test(){
         int a = 0;
     }
 }
