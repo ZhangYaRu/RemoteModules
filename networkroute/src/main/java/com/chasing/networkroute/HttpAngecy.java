@@ -12,6 +12,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author olivia
@@ -21,8 +24,52 @@ import java.net.Socket;
  */
 public class HttpAngecy extends BaseAngecy implements Runnable {
     private Thread mSelfThread;
-    private Thread forwardNo1;
-    private Thread forwardNo2;
+    private ThreadPoolExecutor mThreadPool;
+    private ForwardRunnable forwardNo1;
+    private ForwardRunnable forwardNo2;
+
+    class ForwardRunnable implements Runnable{
+        InputStream is;
+        OutputStream os;
+
+        public InputStream getIs() {
+            return is;
+        }
+
+        public void setIs(InputStream is) {
+            this.is = is;
+        }
+
+        public OutputStream getOs() {
+            return os;
+        }
+
+        public void setOs(OutputStream os) {
+            this.os = os;
+        }
+
+        @Override
+        public void run() {
+            byte[] buffer = new byte[8192];
+            try {
+                while (true) {
+//                    Log.d("代理转发测试3", "forward    while   ");
+                    int bytesRead = is.read(buffer);
+                    Log.d("代理转发测试3", "forward    while   after   read");
+                    if (bytesRead != -1) {
+                        os.write(buffer, 0, bytesRead);
+                        os.flush();
+                        Log.d("代理转发测试3", "forward    bytesRead:" + new String(buffer, 0, bytesRead));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d("代理转发测试3", "forward    IOException:" + e.getMessage());
+                if (mAngecyActionListener != null)
+                    mAngecyActionListener.onError("read/write failed: " + e.getMessage());
+            }
+        }
+    };
 
     /**
      * 代理是否可以执行
@@ -36,6 +83,8 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
 
     public HttpAngecy(AngecyParams angecyParams) {
         mAngecyParams = angecyParams;
+        mThreadPool = new ThreadPoolExecutor(20, 20,
+                0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20));
     }
 
     /**
@@ -107,47 +156,14 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
         }
         Log.d("代理转发测试", "startForward:   ");
 
-        if (forwardNo1 == null) {
-            forwardNo1 = new Thread("http-forward-no.1") {
-                @Override
-                public void run() {
-                    Log.d("代理转发测试", "forwardNo1:   run");
-                    forward(clientIn, serverOut);
-                }
-            };
-        }
-        forwardNo1.start();
-        if (forwardNo2 == null) {
-            forwardNo2 = new Thread("http-forward-no.2") {
-                @Override
-                public void run() {
-                    Log.d("代理转发测试", "forwardNo2:   run");
-                    forward(serverIn, clientOut);
-                }
-            };
-        }
-        forwardNo2.start();
-    }
-
-    private void forward(InputStream is, OutputStream os) {
-        byte[] buffer = new byte[8192];
-        try {
-            while (true) {
-                Log.d("代理转发测试3", "forward    while   ");
-                int bytesRead = is.read(buffer);
-                Log.d("代理转发测试3", "forward    while   after   read");
-                if (bytesRead != -1) {
-                    os.write(buffer, 0, bytesRead);
-                    os.flush();
-                    Log.d("代理转发测试3", "forward    bytesRead:" + new String(buffer, 0, bytesRead));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("代理转发测试3", "forward    IOException:" + e.getMessage());
-            if (mAngecyActionListener != null)
-                mAngecyActionListener.onError("read/write failed: " + e.getMessage());
-        }
+        forwardNo1 = new ForwardRunnable();
+        forwardNo1.setIs(clientIn);
+        forwardNo1.setOs(serverOut);
+        mThreadPool.execute(forwardNo1);
+        forwardNo2 = new ForwardRunnable();
+        forwardNo2.setIs(serverIn);
+        forwardNo2.setOs(clientOut);
+        mThreadPool.execute(forwardNo2);
     }
 
     /**
