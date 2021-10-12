@@ -156,14 +156,14 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
         }
         Log.d("代理转发测试", "startForward:   ");
 
-        forwardNo1 = new ForwardRunnable();
-        forwardNo1.setIs(clientIn);
-        forwardNo1.setOs(serverOut);
-        mThreadPool.execute(forwardNo1);
-        forwardNo2 = new ForwardRunnable();
-        forwardNo2.setIs(serverIn);
-        forwardNo2.setOs(clientOut);
-        mThreadPool.execute(forwardNo2);
+//        forwardNo1 = new ForwardRunnable();
+//        forwardNo1.setIs(clientIn);
+//        forwardNo1.setOs(serverOut);
+//        mThreadPool.execute(forwardNo1);
+//        forwardNo2 = new ForwardRunnable();
+//        forwardNo2.setIs(serverIn);
+//        forwardNo2.setOs(clientOut);
+//        mThreadPool.execute(forwardNo2);
     }
 
     /**
