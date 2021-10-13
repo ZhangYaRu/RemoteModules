@@ -61,7 +61,7 @@ public class TCPAngecy extends BaseAngecy implements Runnable {
                 if (mAngecyActionListener != null)
                     mAngecyActionListener.onWarning("No available port: " + e.getMessage());
             }
-            synchronized (this) {
+            synchronized (BaseAngecy.class) {
                 angecyPortFlag += 2;
             }
         }

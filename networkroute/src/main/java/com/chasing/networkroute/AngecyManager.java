@@ -43,7 +43,7 @@ public class AngecyManager {
     /**
      * 清空连接池
      */
-    public void clearConnectionPool() {
+    public synchronized void clearConnectionPool() {
         for (Map.Entry<String, BaseAngecy> entry : connectionPoolMap.entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
             if (entry.getValue() != null) {
@@ -85,7 +85,7 @@ public class AngecyManager {
      * @param angecyParams 配置参数
      * @return 连接正常, 返回0   连接异常 返回-1
      */
-    public int addNewTCPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
+    public synchronized int addNewTCPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
         // 校验数据有效性
         if (angecyParams == null || angecyParams.activityNetwork == null
                 || TextUtils.isEmpty(angecyParams.ip) || angecyParams.port == 0)
@@ -103,7 +103,7 @@ public class AngecyManager {
      * @param angecyParams 配置参数
      * @return 连接正常, 返回0   连接异常 返回-1
      */
-    public int addNewHTTPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
+    public synchronized int addNewHTTPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
         // 校验数据有效性
         if (angecyParams == null || angecyParams.activityNetwork == null
                 || TextUtils.isEmpty(angecyParams.ip) || angecyParams.port == 0)
@@ -121,7 +121,7 @@ public class AngecyManager {
      * @param angecyParams 配置参数
      * @return 连接正常, 返回0   异常 返回-1
      */
-    public int addNewUDPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
+    public synchronized int addNewUDPAngecy(AngecyParams angecyParams, BaseAngecy.AngecyActionListener angecyActionListener) {
         // 校验数据有效性
         if (angecyParams == null || angecyParams.activityNetwork == null
                 || TextUtils.isEmpty(angecyParams.ip) || angecyParams.port == 0)

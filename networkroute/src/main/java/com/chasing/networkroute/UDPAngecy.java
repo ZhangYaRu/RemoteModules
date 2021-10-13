@@ -70,7 +70,9 @@ public class UDPAngecy extends BaseAngecy implements Runnable {
                     if (mAngecyActionListener != null)
                         mAngecyActionListener.onError("UDPAngecy-remote Socket create error: " + e.getMessage());
                 }
-                angecyPortFlag += 2;
+                synchronized (BaseAngecy.class) {
+                    angecyPortFlag += 2;
+                }
             }
         }
 
