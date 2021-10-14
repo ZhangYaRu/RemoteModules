@@ -55,18 +55,18 @@ public class HttpAngecy extends BaseAngecy implements Runnable {
                 while (true) {
 //                    Log.d("代理转发测试3", "forward    while   ");
                     int bytesRead = is.read(buffer);
-                    Log.d("代理转发测试3", "forward    while   after   read");
+//                    Log.d("代理转发测试3", "forward    while   after   read");
                     if (bytesRead != -1) {
                         os.write(buffer, 0, bytesRead);
                         os.flush();
-                        Log.d("代理转发测试3", "forward    bytesRead:" + new String(buffer, 0, bytesRead));
+//                        Log.d("代理转发测试3", "forward    bytesRead:" + new String(buffer, 0, bytesRead));
                     } else {
                         break;
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d("代理转发测试3", "forward    IOException:" + e.getMessage());
+//                Log.d("代理转发测试3", "forward    IOException:" + e.getMessage());
                 if (mAngecyActionListener != null)
                     mAngecyActionListener.onError("read/write failed: " + e.getMessage());
             }
